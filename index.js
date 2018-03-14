@@ -60,16 +60,20 @@ mf.comp.FormItem = class extends mf.Component {
     }
     
     /**
-     * get forcus status
+     * forcus status getter/setter
      *
      */
-    isFocused () {
+     focus (prm) {
         try {
-            let chk_id  = document.activeElement.id;
-            if (chk_id === this.target().getId()) {
-                return true;
+            if (undefined === prm) {
+                /* getter */
+                if (document.activeElement.id === this.target().getId()) {
+                    return true;
+                }
+                return false;
             }
-            false;
+            /* setter */
+            console.warn('not implements');
         } catch (e) {
             console.error(e.stack);
             throw e;
