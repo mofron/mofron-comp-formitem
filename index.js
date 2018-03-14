@@ -73,7 +73,7 @@ mf.comp.FormItem = class extends mf.Component {
                 return false;
             }
             /* setter */
-            console.warn('not implements');
+            this.target().getRawDom().focus();
         } catch (e) {
             console.error(e.stack);
             throw e;
