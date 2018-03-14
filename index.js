@@ -3,7 +3,8 @@
  * @brief  form item interface
  * @author simpart
  */
-let mf = require('mofron');
+let mf   = require('mofron');
+let Text = require('mofron-comp-text');
 /**
  * @class mofron.comp.FormItem
  * @brief form item component for mofron
@@ -34,14 +35,51 @@ mf.comp.FormItem = class extends mf.Component {
     initDomConts (prm) {
         try {
             super.initDomConts();
+            this.addChild(new Text(''));
+            this.label(prm);
         } catch (e) {
             console.error(e.stack);
             throw e;
         }
     }
     
-    label (lbl) {
-        console.warn('not implements');
+    label (prm) {
+        try {
+            if (undefined === prm) {
+                /* getter */
+                return this.child()[0];
+            }
+            /* setter */
+            if ( !( ('string' === typeof prm) ||
+                    (true     === mf.func.isInclude(prm, 'Text')) ) ) {
+                throw new Error('invalid parameter');
+            }
+            if ('string' === typeof prm) {
+                this.label().text(prm);
+            } else {
+                this.updChild(this.label(), prm);
+            }
+        } catch (e) {
+            console.error(e.stack);
+            throw e;
+        }
+    }
+    
+    require (flg) {
+        try {
+            if (undefined === flg) {
+                /* getter */
+                return (undefined === this.m_req) ? false : this.m_req;
+            }
+            /* setter */
+            if ('boolean' !== typeof flg) {
+                throw new Error('invalid parameter');
+            }
+            this.m_req = flg;
+        } catch (e) {
+            console.error(e.stack);
+            throw e;
+        }
     }
     
     /**
@@ -54,9 +92,22 @@ mf.comp.FormItem = class extends mf.Component {
     
     /**
      * check item value valid
+     *
+     * @return (string) : error reason
+     * @return (null) : no error
      */
     checkValue () {
-        console.warn('not implements');
+        try {
+            if (true === this.require()) {
+                if (null === this.value()) {
+                    return ('' === this.label().text()) ? 'empty value' : this.label().text() + ' is required';
+                }
+            }
+            return null;
+        } catch (e) {
+            console.error(e.stack);
+            throw e;
+        }
     }
     
     /**
@@ -112,6 +163,23 @@ mf.comp.FormItem = class extends mf.Component {
             throw new Error('invalid parameter');
         }
         this.target().attr({ 'disabled' : (true === prm)? 'disabled' : null });
+    }
+    
+    sendKey (nm) {
+        try {
+            if (undefined === nm) {
+                /* getter */
+                return (undefined === this.m_send_key) ? null : this.m_send_key;
+            }
+            /* setter */
+            if ('string' !== typeof nm) {
+                throw new Error('invalid parameter');
+            }
+            this.m_send_key = nm;
+        } catch (e) {
+            console.error(e.stack);
+            throw e;
+        }
     }
 }
 module.exports = mofron.comp.FormItem;
