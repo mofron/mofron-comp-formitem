@@ -73,7 +73,9 @@ mf.comp.FormItem = class extends mf.Component {
                 return false;
             }
             /* setter */
-            this.target().getRawDom().focus();
+            if (true === prm) {
+                this.target().getRawDom().focus();
+            }
         } catch (e) {
             console.error(e.stack);
             throw e;
@@ -98,6 +100,18 @@ mf.comp.FormItem = class extends mf.Component {
             console.error(e.stack);
             throw e;
         }
+    }
+    
+    disabled (prm) {
+        if (undefined === prm) {
+            /* getter */
+            return ('disabled' === this.target().attr('disabled'))? true : false;
+        }
+        /* setter */
+        if ('boolean' !== typeof prm) {
+            throw new Error('invalid parameter');
+        }
+        this.target().attr({ 'disabled' : (true === prm)? 'disabled' : null });
     }
 }
 module.exports = mofron.comp.FormItem;
