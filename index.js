@@ -153,7 +153,7 @@ mf.comp.FormItem = class extends mf.Component {
         }
     }
     
-    disabled (prm) {
+    disableSts (prm) {
         if (undefined === prm) {
             /* getter */
             return ('disabled' === this.target().attr('disabled'))? true : false;
