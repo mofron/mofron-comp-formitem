@@ -90,6 +90,10 @@ mf.comp.FormItem = class extends mf.Component {
         console.warn('not implements');
     }
     
+    defValue (prm) {
+        console.warn('not implements');
+    }
+    
     /**
      * check item value valid
      *
@@ -114,7 +118,7 @@ mf.comp.FormItem = class extends mf.Component {
      * forcus status getter/setter
      *
      */
-     focus (prm) {
+    focus (prm) {
         try {
             if (undefined === prm) {
                 /* getter */
@@ -153,16 +157,39 @@ mf.comp.FormItem = class extends mf.Component {
         }
     }
     
-    disableSts (prm) {
-        if (undefined === prm) {
-            /* getter */
-            return ('disabled' === this.target().attr('disabled'))? true : false;
+    status (prm) {
+        try {
+            if (undefined === prm) {
+                /* getter */
+                return ('disabled' === this.target().attr('disabled'))? true : false;
+            }
+            /* setter */
+            if ('boolean' !== typeof prm) {
+                throw new Error('invalid parameter');
+            }
+            this.target().attr({ 'disabled' : (true === prm)? 'disabled' : null });
+        } catch (e) {
+            console.error(e.stack);
+            throw e;
         }
-        /* setter */
-        if ('boolean' !== typeof prm) {
-            throw new Error('invalid parameter');
+    }
+    
+    enabled () {
+        try {
+            return this.status(true);
+        } catch (e) {
+            console.error(e.stack);
+            throw e;
         }
-        this.target().attr({ 'disabled' : (true === prm)? 'disabled' : null });
+    }
+    
+    disabled () {
+        try {
+            return this.status(false);
+        } catch (e) {
+            console.error(e.stack);
+            throw e;
+        }
     }
     
     sendKey (nm) {
@@ -176,6 +203,15 @@ mf.comp.FormItem = class extends mf.Component {
                 throw new Error('invalid parameter');
             }
             this.m_send_key = nm;
+        } catch (e) {
+            console.error(e.stack);
+            throw e;
+        }
+    }
+    
+    clear () {
+        try {
+            this.value(this.defValue());
         } catch (e) {
             console.error(e.stack);
             throw e;
