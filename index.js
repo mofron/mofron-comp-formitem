@@ -90,10 +90,6 @@ mf.comp.FormItem = class extends mf.Component {
         console.warn('not implements');
     }
     
-    defValue (prm) {
-        console.warn('not implements');
-    }
-    
     /**
      * check item value valid
      *
@@ -210,12 +206,7 @@ mf.comp.FormItem = class extends mf.Component {
     }
     
     clear () {
-        try {
-            this.value(this.defValue());
-        } catch (e) {
-            console.error(e.stack);
-            throw e;
-        }
+        console.warn('not implements');
     }
 }
 module.exports = mofron.comp.FormItem;
