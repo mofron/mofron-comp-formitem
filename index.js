@@ -43,11 +43,28 @@ mf.comp.FormItem = class extends mf.Component {
         }
     }
     
+    child (prm) {
+        try {
+            let ret = super.child(prm);
+            if (undefined !== ret) {
+                let nret = new Array();
+                for (let idx=1; idx < ret.length ;idx++) {
+                    nret.push(ret[idx]);
+                }
+                ret = nret;
+            }
+            return ret;
+        } catch (e) {
+            console.error(e.stack);
+            throw e;
+        }
+    }
+    
     label (prm) {
         try {
             if (undefined === prm) {
                 /* getter */
-                return this.child()[0];
+                return this.getChild(true)[0];
             }
             /* setter */
             if ( !( ('string' === typeof prm) ||
