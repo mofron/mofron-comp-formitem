@@ -82,6 +82,25 @@ mf.comp.FormItem = class extends mf.Component {
         }
     }
     
+    horizon (prm) {
+        try {
+            if (undefined === prm) {
+                let val = this.adom().child()[0].style('display');
+                return ('flex' === val) ? true : false;
+            }
+            /* setter */
+            if ('boolean' !== typeof prm) {
+                throw new Error('invalid parameter');
+            }
+            this.adom().child()[0].style({
+                'display' : 'flex'
+            });
+        } catch (e) {
+            console.error(e.stack);
+            throw e;
+        }
+    }
+    
     require (flg) {
         try {
             if (undefined === flg) {
