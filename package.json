@@ -1,6 +1,6 @@
 {
   "name": "mofron-comp-formitem",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "form item for mofron",
   "main": "index.js",
   "scripts": {

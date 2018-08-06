@@ -43,6 +43,18 @@ mf.comp.FormItem = class extends mf.Component {
         }
     }
     
+    afterRender () {
+        try {
+            super.afterRender();
+            if (true === this.m_focus) {
+                this.focus(true);
+            }
+        } catch (e) {
+            console.error(e.stack);
+            throw e;
+        }
+    }
+    
     child (prm) {
         try {
             let ret = super.child(prm);
@@ -154,14 +166,28 @@ mf.comp.FormItem = class extends mf.Component {
         try {
             if (undefined === prm) {
                 /* getter */
-                if (document.activeElement.id === this.target().getId()) {
-                    return true;
+                if (true === this.target().isPushed()) {
+                    if (document.activeElement.id === this.target().getId()) {
+                        return true;
+                    }
+                    return false;
+                } else {
+                    return (undefined === this.m_focus) ? false : this.m_focus;
                 }
-                return false;
             }
             /* setter */
-            if (true === prm) {
-                this.target().getRawDom().focus();
+            if ('boolean' !== typeof prm) {
+                throw new Error('invalid parameter');
+            }
+            
+            if (true === this.target().isPushed()) {
+                if (true === prm) {
+                    this.target().getRawDom().focus();
+                } else {
+                    this.target().getRawDom().blur();
+                }
+            } else {
+                this.m_focus = prm;
             }
         } catch (e) {
             console.error(e.stack);
