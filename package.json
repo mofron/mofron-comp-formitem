@@ -1,6 +1,6 @@
 {
   "name": "mofron-comp-formitem",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "form item for mofron",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,7 @@
     "front-end"
   ],
   "author": "simparts",
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/mofron/mofron-comp-formitem/issues"
   },

@@ -3,8 +3,8 @@
  * @brief  form item interface
  * @author simpart
  */
-let mf   = require('mofron');
-let Text = require('mofron-comp-text');
+const mf   = require('mofron');
+const Text = require('mofron-comp-text');
 /**
  * @class mofron.comp.FormItem
  * @brief form item component for mofron
@@ -20,6 +20,7 @@ mf.comp.FormItem = class extends mf.Component {
         try {
             super();
             this.name('FormItem');
+            this.prmMap('label');
             this.prmOpt(po);
         } catch (e) {
             console.error(e.stack);
@@ -32,11 +33,11 @@ mf.comp.FormItem = class extends mf.Component {
      * 
      * @param prm : 
      */
-    initDomConts (prm) {
+    initDomConts () {
         try {
             super.initDomConts();
-            this.addChild(new Text(''));
-            this.label(prm);
+            /* label */
+            this.addChild(this.label());
         } catch (e) {
             console.error(e.stack);
             throw e;
@@ -55,38 +56,51 @@ mf.comp.FormItem = class extends mf.Component {
         }
     }
     
-    child (prm) {
-        try {
-            let ret = super.child(prm);
-            if (undefined !== ret) {
-                let nret = new Array();
-                for (let idx=1; idx < ret.length ;idx++) {
-                    nret.push(ret[idx]);
-                }
-                ret = nret;
-            }
-            return ret;
-        } catch (e) {
-            console.error(e.stack);
-            throw e;
-        }
-    }
+    //child (prm) {
+    //    try {
+    //        let ret = super.child(prm);
+    //        if (undefined !== ret) {
+    //            let nret = new Array();
+    //            for (let idx=1; idx < ret.length ;idx++) {
+    //                nret.push(ret[idx]);
+    //            }
+    //            ret = nret;
+    //        }
+    //        return ret;
+    //    } catch (e) {
+    //        console.error(e.stack);
+    //        throw e;
+    //    }
+    //}
     
     label (prm) {
         try {
             if (undefined === prm) {
                 /* getter */
-                return this.getChild(true)[0];
+                if (undefined === this.m_label) {
+                    this.label(
+                        new Text({
+                            text    : '',
+                            visible : false
+                        })
+                    );
+                }
+                return this.m_label;
             }
             /* setter */
-            if ( !( ('string' === typeof prm) ||
-                    (true     === mf.func.isInclude(prm, 'Text')) ) ) {
-                throw new Error('invalid parameter');
-            }
             if ('string' === typeof prm) {
-                this.label().text(prm);
+                this.label().execOption({
+                    text    : prm,
+                    visible : ('' === prm) ? false : true
+                });
+            } else if (true === mf.func.isInclude(prm, 'Text')) {
+                if (undefined === this.m_label) {
+                    this.m_label = prm;
+                } else {
+                    this.updChild(this.label(), prm);
+                }
             } else {
-                this.updChild(this.label(), prm);
+                throw new Error('invalid parameter');
             }
         } catch (e) {
             console.error(e.stack);
@@ -199,7 +213,7 @@ mf.comp.FormItem = class extends mf.Component {
         try {
             if (undefined === fnc) {
                 /* getter */
-                return (undefined === this.m_chgevt) ? null : this.m_chgevt;
+                return (undefined === this.m_chgevt) ? [] : this.m_chgevt;
             }
             /* setter */
             if ('function' !== typeof fnc) {
@@ -233,18 +247,14 @@ mf.comp.FormItem = class extends mf.Component {
     }
     
     enabled () {
-        try {
-            return this.status(true);
-        } catch (e) {
+        try { return this.status(true); } catch (e) {
             console.error(e.stack);
             throw e;
         }
     }
     
     disabled () {
-        try {
-            return this.status(false);
-        } catch (e) {
+        try { return this.status(false); } catch (e) {
             console.error(e.stack);
             throw e;
         }
@@ -269,6 +279,23 @@ mf.comp.FormItem = class extends mf.Component {
     
     clear () {
         console.warn('not implements');
+    }
+    
+    height (prm) {
+        try {
+            if (undefined === prm) {
+                /* getter */
+                return (true === this.label().visible()) ? this.label().height() : null;
+            }
+            /* setter */
+            let siz = mf.func.getSizeObj(prm);
+            this.label().height(
+                (true === this.horizon()) ? siz : siz.value()/2 + siz.type()
+            );
+        } catch (e) {
+            console.error(e.stack);
+            throw e;
+        }
     }
 }
 module.exports = mofron.comp.FormItem;
