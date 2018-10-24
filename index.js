@@ -5,16 +5,12 @@
  */
 const mf   = require('mofron');
 const Text = require('mofron-comp-text');
-/**
- * @class mofron.comp.FormItem
- * @brief form item component for mofron
- */
 mf.comp.FormItem = class extends mf.Component {
-    
     /**
      * initialize component
      * 
-     * @param po paramter or option
+     * @param p1 (object) option
+     * @param p1 (string) label text
      */
     constructor (po) {
         try {
@@ -31,7 +27,7 @@ mf.comp.FormItem = class extends mf.Component {
     /**
      * initialize dom contents
      * 
-     * @param prm : 
+     * @note private method
      */
     initDomConts () {
         try {
@@ -44,70 +40,56 @@ mf.comp.FormItem = class extends mf.Component {
         }
     }
     
+    /**
+     * set focus status
+     *
+     * @note private method
+     */
     afterRender () {
         try {
             super.afterRender();
-            if (true === this.m_focus) {
-                this.focus(true);
-            }
+            this.focus(this.focus());
         } catch (e) {
             console.error(e.stack);
             throw e;
         }
     }
     
-    //child (prm) {
-    //    try {
-    //        let ret = super.child(prm);
-    //        if (undefined !== ret) {
-    //            let nret = new Array();
-    //            for (let idx=1; idx < ret.length ;idx++) {
-    //                nret.push(ret[idx]);
-    //            }
-    //            ret = nret;
-    //        }
-    //        return ret;
-    //    } catch (e) {
-    //        console.error(e.stack);
-    //        throw e;
-    //    }
-    //}
-    
+    /**
+     * label component setter/getter
+     *
+     * @param p1 (string) label text
+     * @param p1 (Text) label component
+     * @return (Text) label component
+     */
     label (prm) {
         try {
-            if (undefined === prm) {
-                /* getter */
-                if (undefined === this.m_label) {
-                    this.label(
-                        new Text({
-                            text    : '',
-                            visible : false
-                        })
-                    );
-                }
-                return this.m_label;
-            }
-            /* setter */
-            if ('string' === typeof prm) {
+            if (true === mf.func.isInclude(prm, 'Text')) {
+                prm.execOption({
+                    text    : '',
+                    visible : false
+                });
+            } else if ('string' === typeof prm) {
                 this.label().execOption({
                     text    : prm,
-                    visible : ('' === prm) ? false : true
+                    visible : true
                 });
-            } else if (true === mf.func.isInclude(prm, 'Text')) {
-                if (undefined === this.m_label) {
-                    this.m_label = prm;
-                } else {
-                    this.updChild(this.label(), prm);
-                }
-            } else {
-                throw new Error('invalid parameter');
+                return;
             }
+            return this.innerComp('label', prm, Text);
         } catch (e) {
             console.error(e.stack);
             throw e;
         }
     }
     
+    /**
+     * horizon position setter/getter
+     *
+     * @param p1 (true) horizon position
+     * @param p1 (false) disable horizon position
+     * @return (boolean) horizon status
+     */
     horizon (prm) {
         try {
             if (undefined === prm) {
@@ -118,27 +100,25 @@ mf.comp.FormItem = class extends mf.Component {
             if ('boolean' !== typeof prm) {
                 throw new Error('invalid parameter');
             }
-            this.adom().child()[0].style({
-                'display' : 'flex'
-            });
+            this.adom().child()[0].style(
+                { 'display' : (true === prm) ? 'flex' : null },
+                true
+            );
         } catch (e) {
             console.error(e.stack);
             throw e;
         }
     }
     
+    /**
+     * require flag setter/getter
+     * it become required item in form if this flag is true
+     * 
+     * @param p1 (boolean) require flag
+     * @return (boolean) require flag
+     */
     require (flg) {
-        try {
-            if (undefined === flg) {
-                /* getter */
-                return (undefined === this.m_req) ? false : this.m_req;
-            }
-            /* setter */
-            if ('boolean' !== typeof flg) {
-                throw new Error('invalid parameter');
-            }
-            this.m_req = flg;
-        } catch (e) {
+        try { return this.member('require', 'boolean', flg, false); } catch (e) {
             console.error(e.stack);
             throw e;
         }
@@ -146,17 +126,18 @@ mf.comp.FormItem = class extends mf.Component {
     
     /**
      * item value getter/setter
-     * 
+     *
+     * @note interface method
      */
     value (prm) {
         console.warn('not implements');
     }
     
     /**
-     * check item value valid
+     * check item value about valid or invalid
      *
-     * @return (string) : error reason
-     * @return (null) : no error
+     * @return (string) error reason
+     * @return (null) no error
      */
     checkValue () {
         try {
@@ -173,62 +154,64 @@ mf.comp.FormItem = class extends mf.Component {
     }
     
     /**
-     * forcus status getter/setter
-     *
+     * focus status getter/setter
+     * 
+     * @param p1 (true) focus this form item
+     * @param p1 (false) defocus this form item
+     * @return (boolean) focus status
      */
     focus (prm) {
         try {
-            if (undefined === prm) {
-                /* getter */
-                if (true === this.target().isPushed()) {
-                    if (document.activeElement.id === this.target().getId()) {
-                        return true;
-                    }
-                    return false;
-                } else {
-                    return (undefined === this.m_focus) ? false : this.m_focus;
+            if ( (undefined === prm) && (true === this.target().isPushed()) ) {
+                if (document.activeElement.id === this.target().getId()) {
+                    return true;
                 }
-            }
-            /* setter */
-            if ('boolean' !== typeof prm) {
-                throw new Error('invalid parameter');
-            }
-            
-            if (true === this.target().isPushed()) {
+                return false;
+            } else if ( (undefined !== prm) && (true === this.target().isPushed()) ) {
                 if (true === prm) {
                     this.target().getRawDom().focus();
                 } else {
                     this.target().getRawDom().blur();
                 }
-            } else {
-                this.m_focus = prm;
             }
+            return this.member('focus', 'boolean', prm, false);
         } catch (e) {
             console.error(e.stack);
             throw e;
         }
     }
     
+    /**
+     * change event callback function setter/getter
+     *
+     * @param p1 (function) callback function
+     * @param p1 (undefined) call as getter
+     * @param p2 (mix) parameter of callback function
+     * @return (array) [function, parameter]
+     */
     changeEvent (fnc, prm) {
         try {
-            if (undefined === fnc) {
-                /* getter */
-                return (undefined === this.m_chgevt) ? [] : this.m_chgevt;
-            }
-            /* setter */
-            if ('function' !== typeof fnc) {
+            if ( (undefined !== fnc) && ('function' !== typeof fnc)) {
                 throw new Error('invalid parameter');
             }
-            if (undefined === this.m_chgevt) {
-                this.m_chgevt = new Array();
-            }
-            this.m_chgevt.push([fnc, prm]);
+            return this.arrayMember(
+                'changeEvent',
+                'object',
+                (undefined !== fnc) ? [fnc, prm] : undefined
+            );
         } catch (e) {
             console.error(e.stack);
             throw e;
         }
     }
     
+    /**
+     * form item status setter/getter
+     * 
+     * @param p1 (true) enable item
+     * @param p1 (false) disable item
+     * @return (boolean) item status
+     */
     status (prm) {
         try {
             if (undefined === prm) {
@@ -246,6 +229,9 @@ mf.comp.FormItem = class extends mf.Component {
         }
     }
     
+    /**
+     * enable form item
+     */
     enabled () {
         try { return this.status(true); } catch (e) {
             console.error(e.stack);
@@ -253,6 +239,9 @@ mf.comp.FormItem = class extends mf.Component {
         }
     }
     
+    /**
+     * disable form item
+     */
     disabled () {
         try { return this.status(false); } catch (e) {
             console.error(e.stack);
@@ -260,38 +249,57 @@ mf.comp.FormItem = class extends mf.Component {
         }
     }
     
+    /**
+     * key when sending post setter/getter
+     * 
+     * @param p1 (string) set key
+     * @param p1 (undefined) call as getter
+     * @return (string) send key
+     */
     sendKey (nm) {
-        try {
-            if (undefined === nm) {
-                /* getter */
-                return (undefined === this.m_send_key) ? null : this.m_send_key;
-            }
-            /* setter */
-            if ('string' !== typeof nm) {
-                throw new Error('invalid parameter');
-            }
-            this.m_send_key = nm;
-        } catch (e) {
+        try { return this.member('sendKey', 'string', nm); } catch (e) {
             console.error(e.stack);
             throw e;
         }
     }
     
+    /**
+     * clear item value
+     *
+     * @note interface method
+     */
     clear () {
         console.warn('not implements');
     }
     
+    /**
+     * height setter/getter
+     *
+     * @param p1 (string) height size (css value)
+     * @param p1 (undefined) call as getter
+     * @return (string) height size (css value)
+     */
     height (prm) {
         try {
             if (undefined === prm) {
                 /* getter */
-                return (true === this.label().visible()) ? this.label().height() : null;
+                if ( (false === this.horizon()) && (true === this.label().visible()) ) {
+                    return mf.func.sizeSum(this.label().height(), super.height());
+                }
+                return super.height();
             }
             /* setter */
-            let siz = mf.func.getSizeObj(prm);
-            this.label().height(
-                (true === this.horizon()) ? siz : siz.value()/2 + siz.type()
-            );
+            let set_siz = mf.func.getSize(prm);
+            if (null == set_siz) {
+                return;
+            }
+            if ( (false === this.horizon()) && (true === this.label().visible()) ) {
+                set_siz = (set_siz.value()/2) + set_siz.type();
+                this.label().height(set_siz);
+                super.height(set_siz);
+            } else {
+                super.height(set_siz);
+            }
         } catch (e) {
             console.error(e.stack);
             throw e;
