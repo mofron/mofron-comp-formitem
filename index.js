@@ -70,10 +70,12 @@ mf.comp.FormItem = class extends mf.Component {
                     visible : false
                 });
             } else if ('string' === typeof prm) {
+                let hei = this.height();
                 this.label().execOption({
                     text    : prm,
                     visible : true
                 });
+                this.height(hei);
                 return;
             }
             return this.innerComp('label', prm, Text);
@@ -294,12 +296,13 @@ mf.comp.FormItem = class extends mf.Component {
                 return;
             }
             if ( (false === this.horizon()) && (true === this.label().visible()) ) {
-                set_siz = (set_siz.value()/2) + set_siz.type();
-                this.label().height(set_siz);
+                let siz_int = mf.func.flo2int(set_siz.value());
+                set_siz = ((siz_int[0]/2) / siz_int[1]) + set_siz.type();
                 super.height(set_siz);
             } else {
                 super.height(set_siz);
             }
+            this.label().execOption({ height : set_siz });
         } catch (e) {
             console.error(e.stack);
             throw e;
