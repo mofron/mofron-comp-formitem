@@ -65,17 +65,9 @@ mf.comp.FormItem = class extends mf.Component {
     label (prm) {
         try {
             if (true === mf.func.isInclude(prm, 'Text')) {
-                prm.execOption({
-                    text    : '',
-                    visible : false
-                });
+                prm.option({ text: '', visible : false });
             } else if ('string' === typeof prm) {
-                let hei = this.height();
-                this.label().execOption({
-                    text    : prm,
-                    visible : true
-                });
-                this.height(hei);
+                this.label().option({ text: prm, visible: true });
                 return;
             }
             return this.innerComp('label', prm, Text);
@@ -302,7 +294,6 @@ mf.comp.FormItem = class extends mf.Component {
             } else {
                 super.height(set_siz);
             }
-            this.label().execOption({ height : set_siz });
         } catch (e) {
             console.error(e.stack);
             throw e;
