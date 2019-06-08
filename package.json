@@ -1,6 +1,6 @@
 {
   "name": "mofron-comp-formitem",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "form item for mofron",
   "main": "index.js",
   "scripts": {
@@ -9,6 +9,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mofron/mofron-comp-formitem.git"
+  },
+  "dependencies": {
+    "mofron-comp-text" : ""
   },
   "keywords": [
     "front-end"

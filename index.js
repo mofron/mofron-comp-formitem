@@ -1,16 +1,19 @@
 /**
  * @file   mofron-comp-formitem/index.js
- * @brief  form item interface
+ * @brief  base component for form item.
+ *         This component has some function for form item.
+ *         Extending this class makes it easier to develop form item components.
+ * @attention It needs to overwrite at extending class since some functions is an interface.
  * @author simpart
  */
 const mf   = require('mofron');
 const Text = require('mofron-comp-text');
 mf.comp.FormItem = class extends mf.Component {
     /**
-     * initialize component
+     * constructor
      * 
-     * @param p1 (object) option
-     * @param p1 (string) label text
+     * @param (string) 'label' parameter
+     * @type private
      */
     constructor (po) {
         try {
@@ -27,7 +30,7 @@ mf.comp.FormItem = class extends mf.Component {
     /**
      * initialize dom contents
      * 
-     * @note private method
+     * @type private
      */
     initDomConts () {
         try {
@@ -43,7 +46,7 @@ mf.comp.FormItem = class extends mf.Component {
     /**
      * set focus status
      *
-     * @note private method
+     * @type private 
      */
     afterRender () {
         try {
@@ -56,11 +59,11 @@ mf.comp.FormItem = class extends mf.Component {
     }
     
     /**
-     * label component setter/getter
+     * form item label
      *
-     * @param p1 (string) label text
-     * @param p1 (Text) label component
-     * @return (Text) label component
+     * @param (string/mofron-comp-text) label text
+     * @return (mofron-comp-text) text component for label
+     * @type tag parameter
      */
     label (prm) {
         try {
@@ -78,11 +81,12 @@ mf.comp.FormItem = class extends mf.Component {
     }
     
     /**
-     * horizon position setter/getter
-     *
-     * @param p1 (true) horizon position
-     * @param p1 (false) disable horizon position
-     * @return (boolean) horizon status
+     * horizontal config
+     * 
+     * @param (boolean) true: horizontal placing (form item is placed next to a label)
+     *                  false: normal placing (form item is placed under a label)
+     * @return (boolean) placing config
+     * @type tag parameter
      */
     horizon (prm) {
         try {
@@ -105,11 +109,13 @@ mf.comp.FormItem = class extends mf.Component {
     }
     
     /**
-     * require flag setter/getter
+     * config for require flag
      * it become required item in form if this flag is true
      * 
-     * @param p1 (boolean) require flag
+     * @param (boolean) true: required item (An error is detected If data is sent when empty this item data)
+     *                  false: not required item
      * @return (boolean) require flag
+     * @type tag parameter
      */
     require (flg) {
         try { return this.member('require', 'boolean', flg, false); } catch (e) {
@@ -119,9 +125,11 @@ mf.comp.FormItem = class extends mf.Component {
     }
     
     /**
-     * item value getter/setter
+     * item value
      *
-     * @note interface method
+     * @param (mixed) item value
+     * @return (mixed) item value
+     * @type tag parameter
      */
     value (prm) {
         console.warn('not implements');
@@ -129,9 +137,10 @@ mf.comp.FormItem = class extends mf.Component {
     
     /**
      * check item value about valid or invalid
-     *
+     * 
      * @return (string) error reason
      * @return (null) no error
+     * @type private
      */
     checkValue () {
         try {
@@ -148,11 +157,12 @@ mf.comp.FormItem = class extends mf.Component {
     }
     
     /**
-     * focus status getter/setter
+     * focus status
      * 
-     * @param p1 (true) focus this form item
-     * @param p1 (false) defocus this form item
+     * @param (boolean) true: focus this item
+     *                  false: defocus this item
      * @return (boolean) focus status
+     * @type tag parameter
      */
     focus (prm) {
         try {
@@ -176,12 +186,12 @@ mf.comp.FormItem = class extends mf.Component {
     }
     
     /**
-     * change event callback function setter/getter
+     * change event function
      *
-     * @param p1 (function) callback function
-     * @param p1 (undefined) call as getter
-     * @param p2 (mix) parameter of callback function
-     * @return (array) [function, parameter]
+     * @param (function) change event
+     * @param (mix) event parameter
+     * @return (array) [[function,parameter], ...]
+     * @type private
      */
     changeEvent (fnc, prm) {
         try {
@@ -200,11 +210,12 @@ mf.comp.FormItem = class extends mf.Component {
     }
     
     /**
-     * form item status setter/getter
+     * item status
      * 
-     * @param p1 (true) enable item
-     * @param p1 (false) disable item
-     * @return (boolean) item status
+     * @param (boolean) true: change enable mode (default)
+     *                  false: change disable mode
+     * @return (boolean) current item status
+     * @type tag parameter
      */
     status (prm) {
         try {
@@ -225,6 +236,8 @@ mf.comp.FormItem = class extends mf.Component {
     
     /**
      * enable form item
+     * 
+     * @type private
      */
     enabled () {
         try { return this.status(true); } catch (e) {
@@ -235,6 +248,8 @@ mf.comp.FormItem = class extends mf.Component {
     
     /**
      * disable form item
+     *
+     * @type private
      */
     disabled () {
         try { return this.status(false); } catch (e) {
@@ -244,14 +259,14 @@ mf.comp.FormItem = class extends mf.Component {
     }
     
     /**
-     * key when sending post setter/getter
+     * a key of POST data
      * 
-     * @param p1 (string) set key
-     * @param p1 (undefined) call as getter
+     * @param (string) send key
      * @return (string) send key
+     * @type tag parameter
      */
-    sendKey (nm) {
-        try { return this.member('sendKey', 'string', nm); } catch (e) {
+    sendKey (prm) {
+        try { return this.member('sendKey', 'string', prm); } catch (e) {
             console.error(e.stack);
             throw e;
         }
@@ -260,18 +275,19 @@ mf.comp.FormItem = class extends mf.Component {
     /**
      * clear item value
      *
-     * @note interface method
+     * @type private
      */
     clear () {
         console.warn('not implements');
     }
     
     /**
-     * height setter/getter
-     *
-     * @param p1 (string) height size (css value)
-     * @param p1 (undefined) call as getter
-     * @return (string) height size (css value)
+     * item height
+     * 
+     * @param (string (size)) item height
+     *                        If horizon() is false and visible() is true, height will be bisected.
+     * @return (string (size)) item height
+     * @type tag parameter
      */
     height (prm) {
         try {
