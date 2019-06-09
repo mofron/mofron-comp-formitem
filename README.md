@@ -20,13 +20,12 @@ npm install mofron mofron-comp-formitem
 
 | Simple<br>Param | Parameter Name     | Type                           |    Description                     |
 |:---------------:|:-------------------|:-------------------------------|:-----------------------------------|
-|        ◯        | label              | string                         | label text                         |
-|                 |                    | mofron-comp-text               | label text                         | 
+|        ◯        | label              | string/mofron-comp-text        | label text                         |
 |                 | horizon            | boolean                        | true: horizontal placing<br>(form item is placed next to a label) |
 |                 |                    |                                | false: normal placing<br>(form item is placed under a label)      |
 |                 | value              | mixed                          | item value                         |
-|                 | focus              | boolean                        | focus this item                    |
-|                 |                    |                                | defocus this item (default)        |
+|                 | focus              | boolean                        | true: focus this item              |
+|                 |                    |                                | false: defocus this item (default) |
 |                 | changeEvent        | function                       | change event                       |
 |                 |                    | mixed                          | event parameter                    |
 |                 | status             | boolean                        | true: change enable mode (default) |
