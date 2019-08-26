@@ -83,8 +83,8 @@ mf.comp.FormItem = class extends mf.Component {
     /**
      * horizontal config
      * 
-     * @param (boolean) true: horizontal placing (form item is placed next to a label)
-     *                  false: normal placing (form item is placed under a label)
+     * @param (boolean) true: horizontal placing [form item is placed next to a label]
+     *                  false: normal placing [form item is placed under a label]
      * @return (boolean) placing config
      * @type tag parameter
      */
@@ -112,7 +112,7 @@ mf.comp.FormItem = class extends mf.Component {
      * config for require flag
      * it become required item in form if this flag is true
      * 
-     * @param (boolean) true: required item (An error is detected If data is sent when empty this item data)
+     * @param (boolean) true: required item [An error is detected if data is sent when empty this item data]
      *                  false: not required item
      * @return (boolean) require flag
      * @type tag parameter
@@ -126,7 +126,8 @@ mf.comp.FormItem = class extends mf.Component {
     
     /**
      * item value
-     *
+     * interface for getter/setter of formitem
+     * 
      * @param (mixed) item value
      * @return (mixed) item value
      * @type tag parameter
@@ -212,10 +213,10 @@ mf.comp.FormItem = class extends mf.Component {
     /**
      * item status
      * 
-     * @param (boolean) true: change enable mode (default)
+     * @param (boolean) true: change enable mode [default]
      *                  false: change disable mode
      * @return (boolean) current item status
-     * @type tag parameter
+     * @type parameter
      */
     status (prm) {
         try {
@@ -284,12 +285,12 @@ mf.comp.FormItem = class extends mf.Component {
     /**
      * item height
      * 
-     * @param (string (size)) item height
-     *                        If horizon() is false and visible() is true, height will be bisected.
+     * @param (string (size)) item height [ if horizon function is false and visible function is true, height will be bisected.]
+     * @param (option) style option
      * @return (string (size)) item height
      * @type tag parameter
      */
-    height (prm) {
+    height (prm, opt) {
         try {
             if (undefined === prm) {
                 /* getter */
@@ -304,11 +305,9 @@ mf.comp.FormItem = class extends mf.Component {
                 return;
             }
             if ( (false === this.horizon()) && (true === this.label().visible()) ) {
-                let siz_int = mf.func.flo2int(set_siz.value());
-                set_siz = ((siz_int[0]/2) / siz_int[1]) + set_siz.type();
-                super.height(set_siz);
+                super.height(mf.func.roundUp(set_siz.value()/2) + set_siz.type(), opt);
             } else {
-                super.height(set_siz);
+                super.height(set_siz, opt);
             }
         } catch (e) {
             console.error(e.stack);
