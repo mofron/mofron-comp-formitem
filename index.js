@@ -12,7 +12,9 @@ mf.comp.FormItem = class extends mf.Component {
     /**
      * constructor
      * 
-     * @param (string) 'label' parameter
+     * @param (mixed) label parameter
+     *                object: component option
+     * @pmap label
      * @type private
      */
     constructor (po) {
@@ -61,9 +63,9 @@ mf.comp.FormItem = class extends mf.Component {
     /**
      * form item label
      *
-     * @param (string/mofron-comp-text) label text
+     * @param (mixed) string/mofron-comp-text: label text
      * @return (mofron-comp-text) text component for label
-     * @type tag parameter
+     * @type parameter
      */
     label (prm) {
         try {
@@ -83,10 +85,10 @@ mf.comp.FormItem = class extends mf.Component {
     /**
      * horizontal config
      * 
-     * @param (boolean) true: horizontal placing [form item is placed next to a label]
-     *                  false: normal placing [form item is placed under a label]
+     * @param (boolean) true: horizontal placing (form item is placed next to a label)
+     *                  false: normal placing (form item is placed under a label)
      * @return (boolean) placing config
-     * @type tag parameter
+     * @type parameter
      */
     horizon (prm) {
         try {
@@ -112,10 +114,10 @@ mf.comp.FormItem = class extends mf.Component {
      * config for require flag
      * it become required item in form if this flag is true
      * 
-     * @param (boolean) true: required item [An error is detected if data is sent when empty this item data]
+     * @param (boolean) true: required item (An error is detected if data is sent when empty this item data)
      *                  false: not required item
      * @return (boolean) require flag
-     * @type tag parameter
+     * @type parameter
      */
     require (flg) {
         try { return this.member('require', 'boolean', flg, false); } catch (e) {
@@ -130,7 +132,7 @@ mf.comp.FormItem = class extends mf.Component {
      * 
      * @param (mixed) item value
      * @return (mixed) item value
-     * @type tag parameter
+     * @type private
      */
     value (prm) {
         console.warn('not implements');
@@ -163,7 +165,7 @@ mf.comp.FormItem = class extends mf.Component {
      * @param (boolean) true: focus this item
      *                  false: defocus this item
      * @return (boolean) focus status
-     * @type tag parameter
+     * @type parameter
      */
     focus (prm) {
         try {
