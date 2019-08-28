@@ -287,7 +287,7 @@ mf.comp.FormItem = class extends mf.Component {
     /**
      * item height
      * 
-     * @param (string (size)) item height [ if horizon function is false and visible function is true, height will be bisected.]
+     * @param (string (size)) item height (if horizon function is false and visible function is true, height will be bisected.)
      * @param (option) style option
      * @return (string (size)) item height
      * @type tag parameter
@@ -296,7 +296,9 @@ mf.comp.FormItem = class extends mf.Component {
         try {
             if (undefined === prm) {
                 /* getter */
-                if ( (false === this.horizon()) && (true === this.label().visible()) ) {
+                if ( (false === this.horizon()) &&
+		     ( (true === this.label().visible()) ||
+		       (false === this.target().isPushed() && ("none" !== this.label().style("display"))) ) ) {
                     return mf.func.sizeSum(this.label().height(), super.height());
                 }
                 return super.height();
