@@ -7,7 +7,7 @@
  * @license MIT
  */
 const Text = require('mofron-comp-text');
-const Focus = require('mofron-event-focus');
+const onCommon = require('mofron-event-oncommon');
 const comutl = mofron.util.common;
 
 module.exports = class extends mofron.class.Component {
@@ -25,7 +25,8 @@ module.exports = class extends mofron.class.Component {
             this.name('FormItem');
             this.shortForm('label');
             /* init config */
-	    this.confmng().add('require', { type: 'boolean', init: false }); 
+	    this.confmng().add('require', { type: 'boolean', init: false });
+	    this.confmng().add("focusEvent", { type: 'EventFrame', list: true });
             this.confmng().add('changeEvent', { type: 'EventFrame', list: true });
             this.confmng().add('sendKey', { type: 'string' });
 	    /* set config */
@@ -48,8 +49,29 @@ module.exports = class extends mofron.class.Component {
             super.initDomConts();
             /* label */
             this.child(this.label());
-	    /* check focus */
-            this.event(new Focus({ tag: "FormItem" }));
+            
+	    /* set focus event */
+	    let itm = this;
+            this.event([
+	        new onCommon(comutl.getarg(
+		    () => {
+                        let evt = itm.focusEvent();
+			for (let eidx in evt) {
+                            evt[eidx].exec(itm,true);
+			}
+		    },
+		    "onfocus"
+		)),
+                new onCommon(comutl.getarg(
+                    () => {
+                        let evt = itm.focusEvent();
+                        for (let eidx in evt) {
+                            evt[eidx].exec(itm,false);
+                        }
+                    },
+                    "onblur"
+                ))
+            ]);
         } catch (e) {
             console.error(e.stack);
             throw e;
@@ -59,7 +81,7 @@ module.exports = class extends mofron.class.Component {
     /**
      * set focus status
      *
-     * @type private
+     * @type private 
      */
     afterRender () {
         try {
@@ -185,23 +207,18 @@ module.exports = class extends mofron.class.Component {
      */
     focus (prm) {
         try {
-	    let fcs = this.event({ name: "Focus", tag: "FormItem" });
             if (undefined === prm) {
                 /* getter */
-		return fcs.status();
+		return (document.activeElement === this.childDom().id()) ? true : false;
 	    }
-	    /* setter */
-	    if (true === this.isExists()) {
+            /* setter */
+            if (true === this.isExists()) {
                 if (true === prm) {
                     this.childDom().getRawDom().focus();
                 } else {
                     this.childDom().getRawDom().blur();
                 }
-		if (prm !== fcs.status()) {
-                    fcs.status(prm);
-                    fcs.execListener(prm);
-                }
-            }
+	    }
         } catch (e) {
             console.error(e.stack);
             throw e;
@@ -219,7 +236,7 @@ module.exports = class extends mofron.class.Component {
      */
     focusEvent (fnc, prm) {
         try {
-            return this.event({ name: "Focus", tag: "FormItem" }).listener(fnc, prm);
+	    return this.confmng("focusEvent", comutl.get_eframe(fnc,prm));
 	} catch (e) {
             console.error(e.stack);
             throw e;

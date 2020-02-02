@@ -1,6 +1,6 @@
 {
   "name": "mofron-comp-formitem",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "form item for mofron",
   "main": "index.js",
   "scripts": {
@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "mofron-comp-text" : "",
-    "mofron-event-focus" : ""
+    "mofron-event-oncommon" : ""
   },
   "keywords": [
     "front-end"
