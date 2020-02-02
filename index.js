@@ -1,28 +1,37 @@
 /**
  * @file   mofron-comp-formitem/index.js
  * @brief  base component for form item.
- *         This component has some function for form item.
- *         Extending this class makes it easier to develop form item components.
- * @attention It needs to overwrite at extending class since some functions is an interface.
- * @author simpart
+ *         this component has some function for form item.
+ *         extending this class makes it easier to develop form item components.
+ * @attention it needs to overwrite at extending class since some functions is an interface.
+ * @license MIT
  */
-const mf   = require('mofron');
 const Text = require('mofron-comp-text');
-mf.comp.FormItem = class extends mf.Component {
+const Focus = require('mofron-event-focus');
+const comutl = mofron.util.common;
+
+module.exports = class extends mofron.class.Component {
     /**
-     * constructor
+     * initialize component
      * 
-     * @param (mixed) label parameter
-     *                object: component option
-     * @pmap label
+     * @param (mixed) short-form parameter
+     *                key-value: component config
+     * @short label
      * @type private
      */
-    constructor (po) {
+    constructor (prm) {
         try {
             super();
             this.name('FormItem');
-            this.prmMap('label');
-            this.prmOpt(po);
+            this.shortForm('label');
+            /* init config */
+	    this.confmng().add('require', { type: 'boolean', init: false }); 
+            this.confmng().add('changeEvent', { type: 'EventFrame', list: true });
+            this.confmng().add('sendKey', { type: 'string' });
+	    /* set config */
+	    if (undefined !== prm) {
+                this.config(prm);
+	    }
         } catch (e) {
             console.error(e.stack);
             throw e;
@@ -38,7 +47,9 @@ mf.comp.FormItem = class extends mf.Component {
         try {
             super.initDomConts();
             /* label */
-            this.addChild(this.label());
+            this.child(this.label());
+	    /* check focus */
+            this.event(new Focus({ tag: "FormItem" }));
         } catch (e) {
             console.error(e.stack);
             throw e;
@@ -48,7 +59,7 @@ mf.comp.FormItem = class extends mf.Component {
     /**
      * set focus status
      *
-     * @type private 
+     * @type private
      */
     afterRender () {
         try {
@@ -61,18 +72,22 @@ mf.comp.FormItem = class extends mf.Component {
     }
     
     /**
-     * form item label
+     * form item label setter/getter
      *
-     * @param (mixed) string/mofron-comp-text: label text
+     * @param (mixed) string: label text
+     *                mofron-comp-text: text component for label
+     *                undefined: call as getter
      * @return (mofron-comp-text) text component for label
      * @type parameter
      */
     label (prm) {
         try {
-            if (true === mf.func.isInclude(prm, 'Text')) {
-                prm.option({ text: '', visible : false });
+            if (true === comutl.isinc(prm, 'Text')) {
+                prm.config({ text: '', visible : false });
             } else if ('string' === typeof prm) {
-                this.label().option({ text: prm, visible: true });
+                this.label().config({
+		    text: prm, style: { 'display' : null }
+		});
                 return;
             }
             return this.innerComp('label', prm, Text);
@@ -83,24 +98,21 @@ mf.comp.FormItem = class extends mf.Component {
     }
     
     /**
-     * horizontal config
+     * horizontal config setter/getter
      * 
      * @param (boolean) true: horizontal placing (form item is placed next to a label)
      *                  false: normal placing (form item is placed under a label)
+     *                  undefined: call as getter
      * @return (boolean) placing config
      * @type parameter
      */
     horizon (prm) {
         try {
             if (undefined === prm) {
-                let val = this.adom().child()[0].style('display');
-                return ('flex' === val) ? true : false;
+                return ('flex' === this.rootDom()[0].style('display')) ? true : false;
             }
             /* setter */
-            if ('boolean' !== typeof prm) {
-                throw new Error('invalid parameter');
-            }
-            this.adom().child()[0].style(
+            this.rootDom()[0].style(
                 { 'display' : (true === prm) ? 'flex' : null },
                 true
             );
@@ -111,16 +123,19 @@ mf.comp.FormItem = class extends mf.Component {
     }
     
     /**
-     * config for require flag
+     * config for require flag setter/getter
      * it become required item in form if this flag is true
      * 
      * @param (boolean) true: required item (An error is detected if data is sent when empty this item data)
      *                  false: not required item
+     *                  undefined: call as getter
      * @return (boolean) require flag
      * @type parameter
      */
     require (flg) {
-        try { return this.member('require', 'boolean', flg, false); } catch (e) {
+        try {
+	    return this.confmng('require', flg);
+	} catch (e) {
             console.error(e.stack);
             throw e;
         }
@@ -141,8 +156,8 @@ mf.comp.FormItem = class extends mf.Component {
     /**
      * check item value about valid or invalid
      * 
-     * @return (string) error reason
-     * @return (null) no error
+     * @return (mixed) string: error reason
+     *                 null: no error
      * @type private
      */
     checkValue () {
@@ -160,28 +175,33 @@ mf.comp.FormItem = class extends mf.Component {
     }
     
     /**
-     * focus status
+     * focus status setter/getter
      * 
      * @param (boolean) true: focus this item
      *                  false: defocus this item
+     *                  undefined: call as getter
      * @return (boolean) focus status
      * @type parameter
      */
     focus (prm) {
         try {
-            if ( (undefined === prm) && (true === this.target().isPushed()) ) {
-                if (document.activeElement.id === this.target().getId()) {
-                    return true;
-                }
-                return false;
-            } else if ( (undefined !== prm) && (true === this.target().isPushed()) ) {
+	    let fcs = this.event({ name: "Focus", tag: "FormItem" });
+            if (undefined === prm) {
+                /* getter */
+		return fcs.status();
+	    }
+	    /* setter */
+	    if (true === this.isExists()) {
                 if (true === prm) {
-                    this.target().getRawDom().focus();
+                    this.childDom().getRawDom().focus();
                 } else {
-                    this.target().getRawDom().blur();
+                    this.childDom().getRawDom().blur();
+                }
+		if (prm !== fcs.status()) {
+                    fcs.status(prm);
+                    fcs.execListener(prm);
                 }
             }
-            return this.member('focus', 'boolean', prm, false);
         } catch (e) {
             console.error(e.stack);
             throw e;
@@ -189,23 +209,35 @@ mf.comp.FormItem = class extends mf.Component {
     }
     
     /**
-     * change event function
+     * focus event function setter/getter
+     * 
+     * @param (function) event function
+     *                   undefined: call as getter
+     * @param (mixed) function parameter
+     * @return (array) event list
+     * @type parameter
+     */
+    focusEvent (fnc, prm) {
+        try {
+            return this.event({ name: "Focus", tag: "FormItem" }).listener(fnc, prm);
+	} catch (e) {
+            console.error(e.stack);
+            throw e;
+	}
+    }
+    
+    /**
+     * change event function setter/getter
      *
      * @param (function) change event
+     *                   undefined: call as getter
      * @param (mix) event parameter
-     * @return (array) [[function,parameter], ...]
+     * @return (array) event list
      * @type private
      */
     changeEvent (fnc, prm) {
         try {
-            if ( (undefined !== fnc) && ('function' !== typeof fnc)) {
-                throw new Error('invalid parameter');
-            }
-            return this.arrayMember(
-                'changeEvent',
-                'object',
-                (undefined !== fnc) ? [fnc, prm] : undefined
-            );
+	    return this.confmng('changeEvent', comutl.get_eframe(fnc,prm));
         } catch (e) {
             console.error(e.stack);
             throw e;
@@ -213,10 +245,11 @@ mf.comp.FormItem = class extends mf.Component {
     }
     
     /**
-     * item status
+     * item status setter/getter
      * 
      * @param (boolean) true: change enable mode [default]
      *                  false: change disable mode
+     *                  undefined: call as getter
      * @return (boolean) current item status
      * @type parameter
      */
@@ -224,13 +257,10 @@ mf.comp.FormItem = class extends mf.Component {
         try {
             if (undefined === prm) {
                 /* getter */
-                return ('disabled' === this.target().attr('disabled'))? true : false;
+                return ('disabled' === this.childDom().attrs('disabled'))? true : false;
             }
             /* setter */
-            if ('boolean' !== typeof prm) {
-                throw new Error('invalid parameter');
-            }
-            this.target().attr({ 'disabled' : (true === prm)? 'disabled' : null });
+            this.childDom().attrs({ 'disabled' : (true === prm) ? 'disabled' : null });
         } catch (e) {
             console.error(e.stack);
             throw e;
@@ -240,10 +270,12 @@ mf.comp.FormItem = class extends mf.Component {
     /**
      * enable form item
      * 
-     * @type private
+     * @type function
      */
     enabled () {
-        try { return this.status(true); } catch (e) {
+        try {
+	    return this.status(true);
+	} catch (e) {
             console.error(e.stack);
             throw e;
         }
@@ -252,24 +284,29 @@ mf.comp.FormItem = class extends mf.Component {
     /**
      * disable form item
      *
-     * @type private
+     * @type function
      */
     disabled () {
-        try { return this.status(false); } catch (e) {
+        try {
+	    return this.status(false);
+	} catch (e) {
             console.error(e.stack);
             throw e;
         }
     }
     
     /**
-     * a key of POST data
+     * a key of POST data setter/getter
      * 
      * @param (string) send key
+     *                 undefined: call as getter
      * @return (string) send key
-     * @type tag parameter
+     * @type parameter
      */
     sendKey (prm) {
-        try { return this.member('sendKey', 'string', prm); } catch (e) {
+        try {
+	    return this.confmng('sendKey', prm);
+	} catch (e) {
             console.error(e.stack);
             throw e;
         }
@@ -285,12 +322,14 @@ mf.comp.FormItem = class extends mf.Component {
     }
     
     /**
-     * item height
+     * item height setter/getter
      * 
      * @param (string (size)) item height (if horizon function is false and visible function is true, height will be bisected.)
-     * @param (option) style option
-     * @return (string (size)) item height
-     * @type tag parameter
+     *                        undefined: call as getter
+     * @param (key-value) style option
+     * @return (mixed) string(size): item height
+     *                 null: not set
+     * @type parameter
      */
     height (prm, opt) {
         try {
@@ -298,18 +337,18 @@ mf.comp.FormItem = class extends mf.Component {
                 /* getter */
                 if ( (false === this.horizon()) &&
 		     ( (true === this.label().visible()) ||
-		       (false === this.target().isPushed() && ("none" !== this.label().style("display"))) ) ) {
-                    return mf.func.sizeSum(this.label().height(), super.height());
+		       (false === this.childDom().isPushed() && ("none" !== this.label().style("display"))) ) ) {
+                    return comutl.sizesum(this.label().height(), super.height());
                 }
                 return super.height();
             }
             /* setter */
-            let set_siz = mf.func.getSize(prm);
+            let set_siz = comutl.getsize(prm);
             if (null == set_siz) {
                 return;
             }
             if ( (false === this.horizon()) && (true === this.label().visible()) ) {
-                super.height(mf.func.roundUp(set_siz.value()/2) + set_siz.type(), opt);
+                super.height(comutl.roundup(set_siz.value()/2) + set_siz.type(), opt);
             } else {
                 super.height(set_siz, opt);
             }
@@ -319,5 +358,4 @@ mf.comp.FormItem = class extends mf.Component {
         }
     }
 }
-module.exports = mofron.comp.FormItem;
 /* end of file */
