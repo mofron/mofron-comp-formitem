@@ -25,7 +25,7 @@ module.exports = class extends mofron.class.Component {
             this.name('FormItem');
             this.shortForm('label');
             /* init config */
-	    this.confmng().add('require', { type: 'boolean', init: false });
+	    this.confmng().add('required', { type: 'boolean', init: false });
 	    this.confmng().add("focusEvent", { type: 'EventFrame', list: true });
             this.confmng().add('changeEvent', { type: 'EventFrame', list: true });
             this.confmng().add('sendKey', { type: 'string' });
@@ -81,7 +81,7 @@ module.exports = class extends mofron.class.Component {
     /**
      * set focus status
      *
-     * @type private 
+     * @type private
      */
     afterRender () {
         try {
@@ -145,18 +145,18 @@ module.exports = class extends mofron.class.Component {
     }
     
     /**
-     * config for require flag setter/getter
+     * config for required flag setter/getter
      * it become required item in form if this flag is true
      * 
      * @param (boolean) true: required item (An error is detected if data is sent when empty this item data)
      *                  false: not required item
      *                  undefined: call as getter
-     * @return (boolean) require flag
+     * @return (boolean) required flag
      * @type parameter
      */
-    require (flg) {
+    required (flg) {
         try {
-	    return this.confmng('require', flg);
+	    return this.confmng('required', flg);
 	} catch (e) {
             console.error(e.stack);
             throw e;
@@ -184,7 +184,7 @@ module.exports = class extends mofron.class.Component {
      */
     checkValue () {
         try {
-            if (true === this.require()) {
+            if (true === this.required()) {
                 if (null === this.value()) {
                     return ('' === this.label().text()) ? 'empty value' : this.label().text() + ' is required';
                 }

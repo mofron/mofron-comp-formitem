@@ -1,6 +1,6 @@
 {
   "name": "mofron-comp-formitem",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "form item for mofron",
   "main": "index.js",
   "scripts": {
@@ -15,7 +15,7 @@
     "mofron-event-oncommon" : ""
   },
   "keywords": [
-    "front-end"
+    "front-end", "mofron"
   ],
   "author": "simparts",
   "license": "MIT",
