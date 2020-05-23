@@ -9,6 +9,7 @@
 const Text = require('mofron-comp-text');
 const onCommon = require('mofron-event-oncommon');
 const comutl = mofron.util.common;
+const ConfArg = mofron.class.ConfArg;
 
 module.exports = class extends mofron.class.Component {
     /**
@@ -26,8 +27,8 @@ module.exports = class extends mofron.class.Component {
             this.shortForm('label');
             /* init config */
 	    this.confmng().add('required', { type: 'boolean', init: false });
-	    this.confmng().add("focusEvent", { type: 'EventFrame', list: true });
-            this.confmng().add('changeEvent', { type: 'EventFrame', list: true });
+	    this.confmng().add("focusEvent", { type: 'event', list: true });
+            this.confmng().add('changeEvent', { type: 'event', list: true });
             this.confmng().add('sendKey', { type: 'string' });
 	    /* set config */
 	    if (undefined !== prm) {
@@ -53,7 +54,7 @@ module.exports = class extends mofron.class.Component {
 	    /* set focus event */
 	    let itm = this;
             this.event([
-	        new onCommon(comutl.getarg(
+	        new onCommon(
 		    () => {
                         let evt = itm.focusEvent();
 			for (let eidx in evt) {
@@ -61,8 +62,8 @@ module.exports = class extends mofron.class.Component {
 			}
 		    },
 		    "onfocus"
-		)),
-                new onCommon(comutl.getarg(
+		),
+                new onCommon(
                     () => {
                         let evt = itm.focusEvent();
                         for (let eidx in evt) {
@@ -70,7 +71,7 @@ module.exports = class extends mofron.class.Component {
                         }
                     },
                     "onblur"
-                ))
+                )
             ]);
         } catch (e) {
             console.error(e.stack);
@@ -236,7 +237,7 @@ module.exports = class extends mofron.class.Component {
      */
     focusEvent (fnc, prm) {
         try {
-	    return this.confmng("focusEvent", comutl.get_eframe(fnc,prm));
+	    return this.confmng("focusEvent", fnc, prm);
 	} catch (e) {
             console.error(e.stack);
             throw e;
@@ -254,7 +255,7 @@ module.exports = class extends mofron.class.Component {
      */
     changeEvent (fnc, prm) {
         try {
-	    return this.confmng('changeEvent', comutl.get_eframe(fnc,prm));
+	    return this.confmng('changeEvent', fnc, prm);
         } catch (e) {
             console.error(e.stack);
             throw e;
