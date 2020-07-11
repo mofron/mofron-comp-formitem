@@ -58,7 +58,7 @@ module.exports = class extends mofron.class.Component {
 		    () => {
                         let evt = itm.focusEvent();
 			for (let eidx in evt) {
-                            evt[eidx].exec(itm,true);
+                            evt[eidx][0](itm,true,evt[eidx][1]);
 			}
 		    },
 		    "onfocus"
@@ -67,7 +67,7 @@ module.exports = class extends mofron.class.Component {
                     () => {
                         let evt = itm.focusEvent();
                         for (let eidx in evt) {
-                            evt[eidx].exec(itm,false);
+                            evt[eidx][0](itm,false,evt[eidx][1]);
                         }
                     },
                     "onblur"
