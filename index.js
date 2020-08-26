@@ -23,7 +23,7 @@ module.exports = class extends mofron.class.Component {
     constructor (prm) {
         try {
             super();
-            this.name('FormItem');
+            this.modname('FormItem');
             this.shortForm('label');
             /* init config */
 	    this.confmng().add('required', { type: 'boolean', init: false });
