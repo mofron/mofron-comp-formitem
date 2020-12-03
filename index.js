@@ -106,7 +106,10 @@ module.exports = class extends mofron.class.Component {
     label (prm) {
         try {
             if (true === comutl.isinc(prm, 'Text')) {
-                prm.config({ text: '', visible : false });
+                prm.config({
+		    text: '', visible: false,
+		    style: { 'margin-right': '0.05rem' }
+		});
             } else if ('string' === typeof prm) {
                 this.label().config({
 		    text: prm, style: { 'display' : null }
@@ -278,7 +281,7 @@ module.exports = class extends mofron.class.Component {
                 return ('disabled' === this.childDom().attrs('disabled'))? true : false;
             }
             /* setter */
-            this.childDom().attrs({ 'disabled' : (true === prm) ? 'disabled' : null });
+            this.childDom().attrs({ 'disabled' : (false === prm) ? 'disabled' : null });
         } catch (e) {
             console.error(e.stack);
             throw e;
