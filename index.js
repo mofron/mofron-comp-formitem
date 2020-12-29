@@ -71,7 +71,8 @@ module.exports = class extends mofron.class.Component {
                         }
                     },
                     "onblur"
-                )
+                ),
+		{ private: true }
             ]);
         } catch (e) {
             console.error(e.stack);
@@ -108,11 +109,12 @@ module.exports = class extends mofron.class.Component {
             if (true === comutl.isinc(prm, 'Text')) {
                 prm.config({
 		    text: '', visible: false,
-		    style: { 'margin-right': '0.05rem' }
+		    style: new ConfArg({ 'margin-right': '0.05rem' })
 		});
             } else if ('string' === typeof prm) {
                 this.label().config({
-		    text: prm, style: { 'display' : null }
+		    text: prm,
+		    style: new ConfArg({ 'display': null })
 		});
                 return;
             }
@@ -240,7 +242,9 @@ module.exports = class extends mofron.class.Component {
      */
     focusEvent (fnc, prm) {
         try {
-	    return this.confmng("focusEvent", fnc, prm);
+	    return this.confmng(
+	        "focusEvent", (undefined === fnc) ? undefined : [fnc,prm]
+            );
 	} catch (e) {
             console.error(e.stack);
             throw e;
@@ -258,7 +262,9 @@ module.exports = class extends mofron.class.Component {
      */
     changeEvent (fnc, prm) {
         try {
-	    return this.confmng('changeEvent', fnc, prm);
+	    return this.confmng(
+	        'changeEvent', (undefined === fnc) ? undefined : [fnc,prm]
+            );
         } catch (e) {
             console.error(e.stack);
             throw e;
@@ -281,7 +287,7 @@ module.exports = class extends mofron.class.Component {
                 return ('disabled' === this.childDom().attrs('disabled'))? true : false;
             }
             /* setter */
-            this.childDom().attrs({ 'disabled' : (false === prm) ? 'disabled' : null });
+            this.childDom().attrs({ 'disabled' : (true === prm) ? 'disabled' : null });
         } catch (e) {
             console.error(e.stack);
             throw e;
