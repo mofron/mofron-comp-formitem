@@ -27,6 +27,7 @@ module.exports = class extends mofron.class.Component {
             this.shortForm('label');
             /* init config */
 	    this.confmng().add('required', { type: 'boolean', init: false });
+	    this.confmng().add('horizon', { type: 'boolean', init: false });
 	    this.confmng().add("focusEvent", { type: 'event', list: true });
             this.confmng().add('changeEvent', { type: 'event', list: true });
             this.confmng().add('sendKey', { type: 'string' });
@@ -71,9 +72,8 @@ module.exports = class extends mofron.class.Component {
                         }
                     },
                     "onblur"
-                ),
-		{ private: true }
-            ]);
+                )
+            ], { private: true });
         } catch (e) {
             console.error(e.stack);
             throw e;
@@ -108,13 +108,11 @@ module.exports = class extends mofron.class.Component {
         try {
             if (true === comutl.isinc(prm, 'Text')) {
                 prm.config({
-		    text: '', visible: false,
-		    style: new ConfArg({ 'margin-right': '0.05rem' })
+		    visible: false, style: { 'margin-right':'0.05rem' }
 		});
             } else if ('string' === typeof prm) {
                 this.label().config({
-		    text: prm,
-		    style: new ConfArg({ 'display': null })
+		    text:prm, style:{ 'display':null }
 		});
                 return;
             }
@@ -144,6 +142,7 @@ module.exports = class extends mofron.class.Component {
                 { 'display' : (true === prm) ? 'flex' : null },
                 true
             );
+	    this.confmng("horizon",prm);
         } catch (e) {
             console.error(e.stack);
             throw e;
@@ -242,6 +241,12 @@ module.exports = class extends mofron.class.Component {
      */
     focusEvent (fnc, prm) {
         try {
+	    if (true === Array.isArray(fnc)) {
+	        for (let fidx in fnc) {
+                    this.focusEvent(fnc[fidx][0],fnc[fidx][1]);
+                }
+		return;
+	    }
 	    return this.confmng(
 	        "focusEvent", (undefined === fnc) ? undefined : [fnc,prm]
             );
@@ -262,6 +267,12 @@ module.exports = class extends mofron.class.Component {
      */
     changeEvent (fnc, prm) {
         try {
+            if (true === Array.isArray(fnc)) {
+                for (let fidx in fnc) {
+                    this.changeEvent(fnc[fidx][0],fnc[fidx][1]);
+                }
+                return;
+            }
 	    return this.confmng(
 	        'changeEvent', (undefined === fnc) ? undefined : [fnc,prm]
             );
