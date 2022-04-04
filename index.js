@@ -298,7 +298,7 @@ module.exports = class extends mofron.class.Component {
                 return ('disabled' === this.childDom().attrs('disabled'))? true : false;
             }
             /* setter */
-            this.childDom().attrs({ 'disabled' : (true === prm) ? 'disabled' : null });
+            this.childDom().attrs({ 'disabled' : (true !== prm) ? 'true' : null });
         } catch (e) {
             console.error(e.stack);
             throw e;
